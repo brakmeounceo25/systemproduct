@@ -1,0 +1,45 @@
+<div class="modal fade col-sm-12" id="modalCreateUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:40%;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title fs-5" id="exampleModalLabel">Creating Users</h3>
+          <button type="button" class="btn-close btn" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+           <form id="formCreateuser" enctype="multipart/form-data" method="POST">
+
+                <div class="form-group">
+                   <label for="">Username</label>
+                   <input type="text" name="name" class="name form-control">
+                   <p></p>
+                </div>
+
+                <div class="form-group">
+                  <label for="">Email</label>
+                  <input type="email" name="email" class="email form-control">
+                  <p></p>
+                </div>
+
+                <div class="form-group">
+                  <label for="">Password</label>
+                  <input type="password" name="password" class="password form-control">
+                  <p></p>
+                </div>
+
+                <div class="form-group">
+                  <label for="">Role</label>
+                  <select name="role" class="role form-control">
+                    <option value="1">Admin</option>
+                    <option value="2">User</option>
+                    <option value="3">Delivery</option>
+                  </select>
+                </div>
+           </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="saveUser('#formCreateuser')" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+</div>
