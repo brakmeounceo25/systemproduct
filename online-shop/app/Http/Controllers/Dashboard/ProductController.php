@@ -81,7 +81,7 @@ class ProductController extends Controller
         }
         else{
             return response()->json([
-                'status' => 404,
+                'status' => 500,
                 'message' => 'Product saved Unsuccessfully',
                 'errors' => $validator->errors()
             ]);
