@@ -338,7 +338,7 @@
                               if(response.status == 200){
                                     $(form).trigger("reset");
                                     //$(".show-previews-images").html("");
-                                    $("#ModalCreateProduct").modal("hide");
+                                    $("#ModalUpdateProduct").modal("hide");
                                     $("input").removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
                                     Message(response.message,true);
                                     SelectProduct();
