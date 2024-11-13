@@ -122,7 +122,41 @@ class ProductController extends Controller
 
     // update product in database
     public function update(Request $request){
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'price' => 'required|numeric',
+            'desc'   => 'required',
+            'qty'   => 'required|numeric',
+        ]);
 
+        if ($validator->passes()) {
+            $product = new Product();
+            $product->title       = $request->title;
+            $product->desc        = $request->desc;
+            $product->price       = $request->price;
+            $product->qty         = $request->qty;
+            $product->category_id = $request->category;
+            $product->brand_id    = $request->brand;
+            $product->color       = implode(",", $request->color);
+            $product->user_id     = Auth::user()->id;
+            $product->status      = $request->status;
+
+            $product->save();
+
+            if ($request->image_uploads != null) {
+                $images = $request->image_uploads;
+                foreach ($images as $img) {
+                    $image = new ProductImage();
+                    $image->image = $img;
+                    $image->product_id = $product->id;
+                    if (File::exists(public_path("uploads/temp/$img"))) {
+                        File::copy(public_path("uploads/temp/$img"), public_path("uploads/products/$img"));
+                        File::delete(public_path("uploads/temp/$img"));
+                    }
+                    $image->save();
+                }
+            }
+        }
     }
 
     // delete product in database
