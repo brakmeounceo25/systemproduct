@@ -34,7 +34,25 @@
                         
                   </tbody>
             </table>
-            <div class="preview-color-page mt-3"></div>
+            <div class="preview-product-page mt-3">
+                  <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                              <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                              </li>
+                              <li class="page-item"><a class="page-link" href="#">1</a></li>
+                              <li class="page-item"><a class="page-link" href="#">2</a></li>
+                              <li class="page-item"><a class="page-link" href="#">3</a></li>
+                              <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                              </li>
+                        </ul>
+                  </nav>
+            </div>
           </div> 
         </div>
       </div>
@@ -64,36 +82,90 @@
                         url: "{{ route('product.data') }}",
                         dataType: "json",
                         success: function (response) {
-                              let categories = response.data.categories;
-                              let opt_category = '';
+                              if(response.status == 200){
+                                    let categories = response.data.categories;
+                                    let opt_category = '';
 
-                              $.each(categories, function(key, value){
-                                     opt_category += `<option value="${value.id}">${value.name}</option>`;
-                              });
-                              
-                              $('#category_add').html(opt_category);
+                                    $.each(categories, function(key, value){
+                                          opt_category += `<option value="${value.id}">${value.name}</option>`;
+                                    });
+                                    
+                                    $('#category_add').html(opt_category);
 
-                              let brands = response.data.brands;
-                              let opt_brands = '';
+                                    let brands = response.data.brands;
+                                    let opt_brands = '';
 
-                              $.each(brands, function(key, value){
-                                     opt_brands += `<option value="${value.id}">${value.name}</option>`;
-                              });
-                              
-                              $('#brand_add').html(opt_brands);
+                                    $.each(brands, function(key, value){
+                                          opt_brands += `<option value="${value.id}">${value.name}</option>`;
+                                    });
+                                    
+                                    $('#brand_add').html(opt_brands);
 
-                              let colors = response.data.colors;
-                              let opt_colors = '';
+                                    let colors = response.data.colors;
+                                    let opt_colors = '';
 
-                              $.each(colors, function(key, value){
-                                     opt_colors += `<option value="${value.id}">${value.name}</option>`;
-                              });
-                              
-                              $('#color_add').html(opt_colors);
+                                    $.each(colors, function(key, value){
+                                          opt_colors += `<option value="${value.id}">${value.name}</option>`;
+                                    });
+                                    
+                                    $('#color_add').html(opt_colors);
+                              }
                         }
                   });
             }
             DataHandle();
+
+             // ----------------------- Uploads Product Image -------------------- //
+            const UploadProductImage = (form) =>{
+                  let payloads = new FormData($(form)[0]);
+                  $.ajax({
+                        type: "POST",
+                        url: "{{ route('product.upload') }}",
+                        data: payloads,
+                        dataType: "json",
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                              if(response.status == 200){
+                                    Message(response.message,true);
+                                    let images = response.images;
+                                    let img = ``;
+                                    $.each(images, function(key, value){
+                                          img +=`
+                                                <div class="col-lg-4 col-md-4 col-sm-8 col-12>
+                                                      <input type="hidden" name="image_uploads[]" value="${value}" />
+                                                      <img height="200" class="rounded-sm w-100" src="{{ asset('uploads/temp/${value}') }}" alt="" /> 
+                                                      <button type="button" onclick="CanselImages(this,'${value}')" class="btn btn-sm btn-danger"> <i class="bi bi-trash"></i> </button>     
+                                                </div>
+                                          `;
+                                    });
+
+                                    $(".show-previews-images").append(img);
+                              }
+                        }
+                  });
+            }
+
+            // ----------------------- CanselImages -------------------- //
+            const CanselImages = (e,image) => {
+                  if(confirm('Do you want to cansel a images this? ')){
+                        $.ajax({
+                              type: "POST",
+                              url: "{{ route('product.cansel') }}",
+                              data: {
+                                    "image": image,
+                              },
+                              dataType: "json",
+                              success: function (response) {
+                                    if(response.status == 200){
+
+                                          Message(response.message);
+                                          $(e).parent().remove();
+                                    }
+                              }
+                        });
+                  }
+            }
 
              // ----------------------- StoreProducts -------------------- //
             const storeProduct = (form) =>{
@@ -108,7 +180,7 @@
                         success: function (response) {
                               if(response.status == 200){
                                     $(form).trigger("reset");
-                                    //$(".show-previews-images").html("");
+                                    $(".show-previews-images").html("");
                                     $("#ModalCreateProduct").modal("hide");
                                     $("input").removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
                                     Message(response.message,true);
@@ -143,62 +215,14 @@
                   });
             }
 
-            // ----------------------- Uploads Product Image -------------------- //
-            const UploadProductImage = (form) =>{
-                  let payloads = new FormData($(form)[0]);
-                  $.ajax({
-                        type: "POST",
-                        url: "{{ route('product.upload') }}",
-                        data: payloads,
-                        dataType: "json",
-                        contentType: false,
-                        processData: false,
-                        success: function (response) {
-                              if(response.status == 200){
-                                    Message(response.message,true);
-                                    let images = response.images;
-                                    let img = '';
-                                    $.each(images, function(key, value){
-                                          img +=`
-                                                <div class="col-lg-4 col-md-4 col-sm-8 col-12>
-                                                      <input type="hidden" name="image_uploads[]" value="${value}" />
-                                                      <img height="200" class="rounded-sm w-100" src="{{ asset('uploads/temp/${value}') }}" alt="" /> 
-                                                      <button type="button" onclick="CanselImages(this,'${value}')" class="btn btn-sm btn-danger"> <i class="bi bi-trash"></i> </button>     
-                                                </div>
-                                          `;
-                                    });
-                                    $(".show-previews-images").append(img);
-                              }
-                        }
-                  });
-            }
-
-            // ----------------------- CanselImages -------------------- //
-            const CanselImages = (e,image) => {
-                  if(confirm('Do you want to cansel a images this? ')){
-                        $.ajax({
-                              type: "POST",
-                              url: "{{ route('product.cansel') }}",
-                              data: {
-                                    "image": image,
-                              },
-                              dataType: "json",
-                              success: function (response) {
-                                    if(response.status == 200){
-
-                                          Message(response.message);
-                                          $(e).parent().remove();
-                                    }
-                              }
-                        });
-                  }
-            }
-
             // -------------------- ListProducts ---------------------- //
-            const SelectProduct = () =>{
+            const SelectProduct = (page,search = null) =>{
                   $.ajax({
                         type: "POST",
                         url: "{{ route('product.list') }}",
+                        data: {
+                              "search" : search
+                        },
                         dataType: "json",
                         success: function (response) {
                               if(response.status == 200){
@@ -210,7 +234,13 @@
                                           <tr>
                                                 <td>${value.id}</td>
                                                 <td>
-                                                      <img height="100" class="rounded-sm w-100" src="{{ asset('uploads/products/${value.image}') }}" alt="" /> 
+                                                      `;
+                                                      if(value.images.length > 0){
+                                                            tr += `
+                                                                  <img src="{{ asset('uploads/product/${value.images[0].image}') }}" height="100" class="rounded-sm w-100" alt="" />
+                                                            `;
+                                                      }
+                                                tr += `
                                                 </td>      
                                                 </td>
                                                 <td>${value.title}</td>
@@ -240,6 +270,19 @@
                   });
             }
             SelectProduct();
+
+            //=============== Search Products =============//
+            $(document).on("click", '.btn-search',function(){
+              let searchValue = $(".search-box").val();
+              SelectProduct(searchValue);
+              // modal hide search
+              $("#Modalsearch").modal('hide');
+            });
+
+            const ProductRefresh = () =>{
+              SelectProduct();
+              $(".search-box").val(" ");
+            }
 
             // Edit Product
             const EditProduct = (id) =>{
@@ -337,7 +380,7 @@
                         success: function (response) {
                               if(response.status == 200){
                                     $(form).trigger("reset");
-                                    //$(".show-previews-images").html("");
+                                    $(".show-images-edit").html("");
                                     $("#ModalUpdateProduct").modal("hide");
                                     $("input").removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
                                     Message(response.message,true);
@@ -347,25 +390,25 @@
                                     Message(response.message,false);
 
                                     if(response.errors.title){
-                                          $('.title_add').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.title);
+                                          $('.title_update').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.title);
                                     }else{
-                                          $('.title_add').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
+                                          $('.title_update').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
                                     }
                                     if(response.errors.desc){
-                                          $('.desc_add').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.desc);
+                                          $('.desc_update').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.desc);
                                     }else{
-                                          $('.desc_add').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
+                                          $('.desc_update').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
                                     }
                                     if(response.errors.price){
-                                          $('.price_add').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.price);
+                                          $('.price_update').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.price);
                                     }else{
-                                          $('.price_add').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
+                                          $('.price_update').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
                                     }
                                     if(response.errors.qty){
-                                          $('.qty_add').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.qty);
+                                          $('.qty_update').addClass("is-invalid").siblings("p").addClass("text-danger").text(response.errors.qty);
                                     }
                                     else{
-                                          $('.qty_add').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
+                                          $('.qty_update').removeClass("is-invalid").siblings("p").removeClass("text-danger").text("");
                                     }
                               }
                         }

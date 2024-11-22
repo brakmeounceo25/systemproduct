@@ -139,6 +139,11 @@
               $("#Modalsearch").modal('hide');
             });
 
+            const BrandRefresh = () =>{
+              brandList();
+              $(".search-box").val(" ");
+            }
+
             //================ Brand Page =================//
             const brandPage = (page) =>{
               brandList(page);

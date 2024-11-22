@@ -7,13 +7,13 @@
         </div> 
         <div class="modal-body"> 
             <form  class="formCreateProduct" enctype="multipart/form-data" method="POST"> 
-                @csrf
+                
                 <div class="row"> 
  
                     <div class="col-lg-8 col-md-8"> 
  
                         <div class="form-group"> 
-                            <label for="title">Product Name</label> 
+                            <label for="title">Product Title</label> 
                             <input type="text" id="title" class="title_add form-control" name="title" required> 
                             <p></p>
                         </div> 
@@ -26,19 +26,19 @@
  
                         <div class="form-group"> 
                             <label for="price">Product Price</label> 
-                            <input type="text" class="price_add form-control" name="price" required> 
+                            <input type="text" id="price" class="price_add form-control" name="price" required> 
                             <p></p>
                         </div> 
  
                         <div class="form-group"> 
                             <label for="qty">Product Quantity</label> 
-                            <input type="text" id="qty" class="qty form-control"  name="qty" required> 
+                            <input type="text" id="qty" class="qty_add form-control"  name="qty" required> 
                             <p></p>
                         </div> 
  
                         <div class="form-group"> 
                             <label for="">Product Image</label> 
-                            <input type="file" id="image" name="image[]" class="images form-control" multiple required> 
+                            <input type="file" id="image" name="image[]" class="image form-control" multiple required> 
                             <button type="button" onclick="UploadProductImage('.formCreateProduct')" class="btn btn-primary upload_image">Upload</button> 
                         </div>
                         <p></p>

@@ -48,9 +48,8 @@
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
           <footer class="footer">
-            <div class="container-fluid clearfix">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
+            <div class="container-fluid clearfix p-4">
+              <span class="text-muted text-center text-sm-left d-sm-inline-block" style="font-size: 18px">Created by @ brakmeoun99@gmail.com</span>
             </div>
           </footer>
           <!-- partial -->
@@ -115,7 +114,7 @@
                   stopOnFocus: true, // Prevents dismissing of toast on hover
                   style: {
                     background:`
-                      ${ status == 1 ? 'linear-gradient(to right, #00b09b, #96c93d)' : 'red' }`,
+                      ${ status ? 'linear-gradient(to right, #00b09b, #96c93d)' : 'red' }`,
                   },
                   onClick: function(){} // Callback after click
                 }).showToast();

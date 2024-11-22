@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -47,12 +48,17 @@ class ImageController extends Controller
             ]);
         }else if (File::exists($product_path)) {
             File::delete($product_path);
+
+            // Delete Image from database
+            ProductImage::where('image',$request->image);
+            File::delete($product_path);
         }
         else {
             return response()->json([
                 'status' => 404,
-                'message' => 'Cancelled image not found'
+                'message' => 'Cancelled image not found',
             ]);
         }
     }
+
 }
